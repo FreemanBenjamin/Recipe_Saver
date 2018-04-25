@@ -46,13 +46,16 @@ def recipe_scraper(recipe_url):
     directions = directions.split('\n\n')  # removes newlines inside string
     for item in directions:
         if item == '':
-            directions[directions.index(item)] = '\n\n'  # inserts newlines between direction items
+            directions[directions.index(item)] = '\n'  # inserts newlines between direction items
     directions = ''.join(directions)
     notes = beautifulsoup_recipe.select('#entry-text > div.recipe-introduction-body > p:nth-of-type(2)') #extracts notes
     notes = notes[0].text.strip()
-    extra_notes = beautifulsoup_recipe.select('''body > div:nth-of-type(2) > section.entry-container > article > div > 
+    try:
+        extra_notes = beautifulsoup_recipe.select('''body > div:nth-of-type(2) > section.entry-container > article > div > 
     div.recipe-bottom > aside.callout.callout-bottom.callout-bottom-recipe.recipe-notes > span > p''')
-    extra_notes = extra_notes[0].text.strip()
+        extra_notes = extra_notes[0].text.strip()
+    except IndexError:
+        extra_notes = ''
     active_time = beautifulsoup_recipe.select('''
     body > div:nth-of-type(2) > section.entry-container > article > div > div.recipe-wrapper > ul > li:nth-of-type(2) 
     > span.info''')  # extracts active time
@@ -73,7 +76,7 @@ def create_recipe_doc(recipe_url, recipe_name, image_url, ingredients, direction
     document.add_picture(image_url, width=Inches(6.0))
     document.add_paragraph()
     document.add_heading('Notes', level=2)
-    document.add_paragraph(notes + '\n\n' + extra_notes + '\n')
+    document.add_paragraph(notes + '\n' + extra_notes + '\n')
     document.add_heading('Ingredients', level=2)
     document.add_paragraph(ingredients + '\n')
     document.add_heading('Directions', level=2)
