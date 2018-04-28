@@ -64,25 +64,25 @@ def recipe_scraper(recipe_url):
     body > div:nth-of-type(2) > section.entry-container > article > div > div.recipe-wrapper > ul > li:nth-of-type(3) 
     > span.info''')  # extracts total time
     total_time = total_time[0].text.strip()
-    create_recipe_doc(recipe_url, recipe_name, image_url, ingredients, directions, notes, extra_notes, active_time,
-                      total_time)
+    recipe_items = [recipe_url, recipe_name, active_time, total_time, image_url, notes, extra_notes, ingredients, directions] # saves items to list
+    create_recipe_doc(recipe_items)
 
 
-def create_recipe_doc(recipe_url, recipe_name, image_url, ingredients, directions, notes, extra_notes, active_time,
-                      total_time):
+# creates, populates, and saves a word document with the scraped information
+def create_recipe_doc(recipe_items):
     document = Document()  # opens new word document file
-    document.add_heading(recipe_name)  # starts populating with scraped information
-    document.add_heading('Active Time: ' + active_time + '\t' + 'Total Time: ' + total_time + '\n', level=2)
-    document.add_picture(image_url, width=Inches(6.0))
+    document.add_heading(recipe_items[1])  # starts populating with scraped information
+    document.add_heading('Active Time: ' + recipe_items[2] + '\t' + 'Total Time: ' + recipe_items[3] + '\n', level=2)
+    document.add_picture(recipe_items[4], width=Inches(6.0))
     document.add_paragraph()
     document.add_heading('Notes', level=2)
-    document.add_paragraph(notes + '\n' + extra_notes + '\n')
+    document.add_paragraph(recipe_items[5] + '\n' + recipe_items[6] + '\n')
     document.add_heading('Ingredients', level=2)
-    document.add_paragraph(ingredients + '\n')
+    document.add_paragraph(recipe_items[7] + '\n')
     document.add_heading('Directions', level=2)
-    document.add_paragraph(directions + '\n')
-    document.add_paragraph('Source: ' + recipe_url)  # finishes populating with scraped information
-    document.save(r'C:\Users\Ben\Documents\Recipes\Web Recipes\\' + str(recipe_name) + '.docx')
+    document.add_paragraph(recipe_items[8] + '\n')
+    document.add_paragraph('Source: ' + recipe_items[0])  # finishes populating with scraped information
+    document.save(r'C:\Users\Ben\Documents\Recipes\Web Recipes\\' + str(recipe_items[1]) + '.docx')
     # saves to a file with recipe name as filename
 
 recipe_saver()
