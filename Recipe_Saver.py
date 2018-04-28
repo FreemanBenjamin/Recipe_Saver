@@ -46,7 +46,7 @@ def recipe_scraper(recipe_url):
     directions = directions.split('\n\n')  # removes newlines inside string
     for item in directions:
         if item == '':
-            directions[directions.index(item)] = '\n'  # inserts newlines between direction items
+            directions[directions.index(item)] = '\n\n'  # inserts newlines between direction items
     directions = ''.join(directions)
     notes = beautifulsoup_recipe.select('#entry-text > div.recipe-introduction-body > p:nth-of-type(2)') #extracts notes
     notes = notes[0].text.strip()
